@@ -21,8 +21,17 @@
       }
     },
 
+    "StorageType": {
+      "type": "string",
+      "defaultValue": "Premium_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Premium_LRS"
+      ]
+    },
     "sizeOf_E_Drive": {
       "type": "string",
+      "defaultValue": "127",
       "metadata": {
         "description": "Size of E:/ drive in GB"
       }
@@ -55,7 +64,7 @@
         "apiVersion": "[variables('apiVersion')]",
         "location": "[resourceGroup().location]",
         "properties": {
-          "accountType": "[variables('storageAccountType')]"
+          "accountType": "[parameters('StorageType')]"
         }
       },
       {
