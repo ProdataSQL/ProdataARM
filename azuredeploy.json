@@ -20,6 +20,7 @@
         "description": "Size of VM"
       }
     },
+
     "sizeOf_E_Drive": {
       "type": "string",
       "metadata": {
@@ -148,7 +149,7 @@
                 },
                 "createOption": "Empty"
               }
-             ],
+            ],
             "osDisk": {
               "name": "C_Drive",
               "vhd": {
