@@ -1,21 +1,33 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "adminUsername": {
-            "value": "Esteban"
-        },
-        "adminPassword": {
-            "value": "Password1234"
-        },
-        "vmName": {
-            "value": "EstebanVM"
-        },
-        "vmSize": {
-            "value": "Standard_D3_v2"
-        },
-        "sizeOf_E_Drive": {
-            "value": "100"
-        }
+  "parameters": {
+    "adminUsername": {
+      "value": "Esteban"
+    },
+    "adminPassword": {
+      "value": "Password1234"
+    },
+    "vmName": {
+      "value": "EstebanVM"
+    },
+    "vmSize": {
+      "value": "Standard_D3"
+    },
+    "sizeOf_E_Drive": {
+      "value": "100"
+    },
+    "StorageType": {
+      "value": "Premium_LRS"
+    },
+    "DiskCaching": {
+      "value": "ReadOnly"
+    },
+    "IPAddressesType": {
+      "value": "Static"
+    },
+    "IPAdress": {
+      "value": "10.0.0.4"
     }
+  }
 }
