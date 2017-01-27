@@ -43,6 +43,14 @@
         "Premium_LRS"
       ]
     },
+    "StorageTier": {
+      "type": "string",
+      "defaultValue": "Premium",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ]
+    },
     "DiskCaching": {
       "type": "String",
       "defaultValue": "ReadOnly",
@@ -70,7 +78,7 @@
         "description": "Size of E:/ drive in GB"
       }
     }
- },
+  },
   "variables": {
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'saddiskvm')]",
     "addressPrefix": "10.0.0.0/16",
@@ -87,7 +95,7 @@
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "vmStorageAccountContainerName": "vhds",
     "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
-    "backslah": "\\"
+    "backslah": "\\",
   },
   "resources": [
     {
@@ -156,8 +164,9 @@
       "name": "[variables('storageAccountName')]",
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
-      "properties": {
-        "accountType": "[parameters('StorageType')]"
+      "sku": {
+        "name": "[parameters('StorageType')]",
+        "tier": "[parameters('StorageTier')]"
       }
     },
     {
