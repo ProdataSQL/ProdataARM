@@ -271,22 +271,6 @@
       "dependsOn": []
     },
     {
-      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/prodata_arm/providers/Microsoft.Storage/storageAccounts/prodataarmdiag281'.",
-      "type": "Microsoft.Storage/storageAccounts",
-      "sku": {
-        "name": "Standard_LRS",
-        "tier": "Standard"
-      },
-      "kind": "Storage",
-      "name": "[parameters('storageAccounts_prodataarmdiag281_name')]",
-      "apiVersion": "2016-01-01",
-      "location": "northeurope",
-      "tags": {},
-      "properties": {},
-      "resources": [],
-      "dependsOn": []
-    },
-    {
       "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/prodata_arm/providers/Microsoft.Storage/storageAccounts/prodataarmdisks638'.",
       "type": "Microsoft.Storage/storageAccounts",
       "sku": {
