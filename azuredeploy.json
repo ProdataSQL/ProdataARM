@@ -23,13 +23,13 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_A1_v2",
+      "defaultValue": "Standard_DS13_v2",
       "allowedValues": [
         "Standard_D1",
         "Standard_D2",
         "Standard_D3",
         "Standard_D4",
-        "Standard_A1_v2"
+        "Standard_DS13_v2"
       ],
       "metadata": {
         "description": "Size of VM"
@@ -78,16 +78,16 @@
     "apiVersion": "2015-06-15",
     "publicIPAddressName": "[concat(parameters('vmName'),'_PublicIP')]",
     "virtualNetworkName": "[concat(parameters('vmName'),'_VNET')]",
-    "imagePublisher": "MicrosoftWindowsServer",
-    "imageOffer": "WindowsServer",
-    "imageSKU": "2012-Datacenter",
+    "imagePublisher": "MicrosoftSQLServer",
+    "imageOffer": "SQL2016SP1-WS2016",
+    "imageSKU": "SQLDEV",
     "imageVersion": "latest",
     "subnet1Name": "Subnet-1",
     "subnet1Prefix": "10.0.0.0/24",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "vmStorageAccountContainerName": "vhds",
     "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
-     "backslah": "\\"
+    "backslah": "\\"
   },
   "resources": [
     {
