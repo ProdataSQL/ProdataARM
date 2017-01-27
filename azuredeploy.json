@@ -161,13 +161,18 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('storageAccountName')]",
-      "apiVersion": "[variables('apiVersion')]",
-      "location": "[resourceGroup().location]",
       "sku": {
         "name": "[parameters('StorageType')]",
         "tier": "[parameters('StorageTier')]"
-      }
+      },
+      "kind": "Storage",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "[variables('apiVersion')]",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "properties": {},
+      "resources": [],
+      "dependsOn": []
     },
     {
       "apiVersion": "[variables('apiVersion')]",
