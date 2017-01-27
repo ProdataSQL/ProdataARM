@@ -23,12 +23,13 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_D2",
+      "defaultValue": "Standard_A1_v2",
       "allowedValues": [
         "Standard_D1",
         "Standard_D2",
         "Standard_D3",
-        "Standard_D4"
+        "Standard_D4",
+        "Standard_A1_v2"
       ],
       "metadata": {
         "description": "Size of VM"
@@ -43,12 +44,12 @@
       ]
     },
     "DiskCaching": {
-      "type":"String",
+      "type": "String",
       "defaultValue": "ReadOnly",
       "allowedValues": [
         "ReadOnly",
         "ReadWrite"
-      ],
+      ]
     },
     "IPAddressesType": {
       "defaultValue": "Static",
@@ -69,7 +70,7 @@
         "description": "Size of E:/ drive in GB"
       }
     }
-  },
+ },
   "variables": {
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'saddiskvm')]",
     "addressPrefix": "10.0.0.0/16",
@@ -85,7 +86,8 @@
     "subnet1Prefix": "10.0.0.0/24",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "vmStorageAccountContainerName": "vhds",
-    "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]"
+    "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
+     "backslah": "\\"
   },
   "resources": [
     {

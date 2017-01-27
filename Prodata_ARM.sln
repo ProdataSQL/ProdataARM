@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ProdataARM", "ProdataARM.deployproj", "{AE8BDA41-2ABE-4908-862E-B30EBBD74156}"
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Prodata_ARM", "Prodata_ARM.deployproj", "{AE8BDA41-2ABE-4908-862E-B30EBBD74156}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
