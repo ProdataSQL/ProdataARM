@@ -86,6 +86,7 @@
     "apiVersion": "2015-06-15",
     "publicIPAddressName": "[concat(parameters('vmName'),'_PublicIP')]",
     "virtualNetworkName": "[concat(parameters('vmName'),'_VNET')]",
+    "networkSecurityGroups": "[concat(parameters('vmName'),'_NSG')]",
     "imagePublisher": "MicrosoftSQLServer",
     "imageOffer": "SQL2016SP1-WS2016",
     "imageSKU": "SQLDEV",
@@ -95,54 +96,66 @@
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
     "vmStorageAccountContainerName": "vhds",
     "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
-    "backslah": "\\",
+    "backslah": "\\"
   },
   "resources": [
     {
-      "apiVersion": "2015-06-15",
+      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/Prodata_ARM/providers/Microsoft.Compute/virtualMachines/EstebanVMSQL'.",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[parameters('vmName')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
-      ],
+      "apiVersion": "2015-06-15",
+      "location": "northeurope",
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('vmSize')]"
+          "vmSize": "Standard_DS13_v2"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftSQLServer",
+            "offer": "SQL2016SP1-WS2016",
+            "sku": "SQLDEV",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(parameters('vmName'),'_C_Drive')]",
+            "createOption": "FromImage",
+            "vhd": {
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), variables('apiVersion')).primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/','osDisk1.vhd')]"
+            },
+            "caching": "ReadWrite"
+          },
+          "dataDisks": [
+            {
+              "lun": 0,
+              "name": "[concat(parameters('vmName'),'_E_Drive')]",
+              "createOption": "Empty",
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', ), variables('apiVersion')).primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'dataDisk1.vhd')]"
+              },
+              "caching": "[parameters('DiskCaching')]",
+              "diskSizeGB": "[parameters('sizeOf_E_Drive')]"
+            },
+            {
+              "lun": 1,
+              "name": "[concat(parameters('vmName'),'-disk-2')]",
+              "createOption": "Empty",
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', ), variables('apiVersion')).primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'dataDisk2.vhd')]"
+              },
+              "caching": "ReadOnly",
+              "diskSizeGB": 1023
+            }
+          ]
         },
         "osProfile": {
           "computerName": "[parameters('vmName')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSKU')]",
-            "version": "[variables('imageVersion')]"
+          "windowsConfiguration": {
+            "provisionVMAgent": true,
+            "enableAutomaticUpdates": true
           },
-          "dataDisks": [
-            {
-              "name": "[concat(parameters('vmName'),'_E_Drive')]",
-              "diskSizeGB": "[parameters('sizeOf_E_Drive')]",
-              "lun": 0,
-              "caching": "ReadOnly",
-              "vhd": {
-                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), variables('apiVersion')).primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',parameters('vmName'),'dataDisk1.vhd')]"
-              },
-              "createOption": "Empty"
-            }
-          ],
-          "osDisk": {
-            "name": "[concat(parameters('vmName'),'_C_Drive')]",
-            "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), variables('apiVersion')).primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/','osDisk1.vhd')]"
-            },
-            "caching": "[parameters('DiskCaching')]",
-            "createOption": "FromImage"
-          }
+          "secrets": [],
+          "adminPassword": "[parameters('adminPassword')]"
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -150,69 +163,19 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
             }
           ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": "true",
-            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), variables('apiVersion')).primaryEndpoints.blob)]"
-          }
         }
-      }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts",
-      "sku": {
-        "name": "[parameters('StorageType')]",
-        "tier": "[parameters('StorageTier')]"
       },
-      "kind": "Storage",
-      "name": "[variables('storageAccountName')]",
-      "apiVersion": "[variables('apiVersion')]",
-      "location": "[resourceGroup().location]",
-      "tags": {},
-      "properties": {},
       "resources": [],
-      "dependsOn": []
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('vmStorageAccountContainerName'))]"
+      ]
     },
     {
-      "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddressName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publicIPAllocationMethod": "[parameters('IPAddressesType')]"
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('virtualNetworkName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[variables('addressPrefix')]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[variables('subnet1Name')]",
-            "properties": {
-              "addressPrefix": "[variables('subnet1Prefix')]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersion')]",
+      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/Prodata_ARM/providers/Microsoft.Network/networkInterfaces/estebanvmsql513'.",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('nicName')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-      ],
+      "apiVersion": "2016-03-30",
+      "location": "northeurope",
       "properties": {
         "ipConfigurations": [
           {
@@ -228,10 +191,116 @@
               }
             }
           }
+        ],
+        "dnsSettings": {
+          "dnsServers": []
+        },
+        "enableIPForwarding": false,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroups'))]"
+        }
+      },
+      "resources": [],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups',variables('networkSecurityGroups'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/Prodata_ARM/providers/Microsoft.Network/networkSecurityGroups/EstebanVMSQL-nsg'.",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "variables('networkSecurityGroups')",
+      "apiVersion": "2016-03-30",
+      "location": "northeurope",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "default-allow-rdp",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1000,
+              "direction": "Inbound"
+            }
+          }
         ]
-      }
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/Prodata_ARM/providers/Microsoft.Network/publicIPAddresses/EstebanVMSQL-ip'.",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "apiVersion": "2016-03-30",
+      "location": "northeurope",
+      "properties": {
+        "publicIPAllocationMethod": "[parameters('IPAddressesType')]",
+        "idleTimeoutInMinutes": 4
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/Prodata_ARM/providers/Microsoft.Network/virtualNetworks/EstebanVM_VNET'.",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('subnet1Prefix')]"
+            }
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/prodata_arm/providers/Microsoft.Storage/storageAccounts/prodataarmdiag281'.",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "Storage",
+      "name": "[parameters('storageAccounts_prodataarmdiag281_name')]",
+      "apiVersion": "2016-01-01",
+      "location": "northeurope",
+      "tags": {},
+      "properties": {},
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/5e960efa-b193-495d-9767-e5191a86441c/resourceGroups/prodata_arm/providers/Microsoft.Storage/storageAccounts/prodataarmdisks638'.",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Premium_LRS",
+        "tier": "Premium"
+      },
+      "kind": "Storage",
+      "name": "[parameters('storageAccounts_prodataarmdisks638_name')]",
+      "apiVersion": "2016-01-01",
+      "location": "northeurope",
+      "tags": {},
+      "properties": {},
+      "resources": [],
+      "dependsOn": []
     }
-  ],
-  "outputs": {
-  }
+  ]
 }
