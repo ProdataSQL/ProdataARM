@@ -119,7 +119,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[parameters('vmName')]",
+            "name": "[concat(parameters('vmName'), '_C_Drive')]",
             "createOption": "fromImage",
             "vhd": {
               "uri": "[concat(concat(reference(resourceId('ProdataARM', 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), parameters('vmName'), '_C_drive', '.vhd')]"
@@ -127,7 +127,7 @@
           },
           "dataDisks": [
             {
-              "name": "[concat(parameters('vmName'), '-disk-1')]",
+              "name": "[concat(parameters('vmName'), '_E_Drive')]",
               "createOption": "empty",
               "lun": 0,
               "diskSizeGB": "[parameters('sizeOf_E_Drive')]",
